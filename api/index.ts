@@ -4,18 +4,18 @@ import jwt from "jsonwebtoken";
 import db from "./db";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { SALT_ROUNDS } from "./constant";
+import { MY_SECRET_KEY, SALT_ROUNDS } from "./constant";
 
 app.use(express.json());
 
 const generateAccessToken = (user: any) => {
-  return jwt.sign({ id: user.id }, "mySecretKey", {
-    expiresIn: "5s",
+  return jwt.sign({ id: user.id }, MY_SECRET_KEY, {
+    expiresIn: "1m",
   });
 };
 
 const generateRefreshToken = (user: any) => {
-  return jwt.sign({ id: user.id}, "myRefreshSecretKey");
+  return jwt.sign({ id: user.id }, MY_SECRET_KEY);
 };
 
 let refreshTokens: any = [];
@@ -45,28 +45,37 @@ app.post("/api/login", async (req: any, response: any) => {
 
   db.query(sql, (err, res) => {
     if (err) throw err;
-    const {password: passwordDB, username: usernameDB, id, fullName} = res[0]
+    const { password: passwordDB, username: usernameDB, id, fullName } = res[0];
 
     bcrypt.compare(password.toString(), passwordDB, (err, result) => {
-      if(result && username ===usernameDB) {
-        const accessToken = generateAccessToken({username: usernameDB, id,fullName });
-        const refreshToken = generateRefreshToken({username: usernameDB, id,fullName});
+      if (result && username === usernameDB) {
+        const accessToken = generateAccessToken({
+          username: usernameDB,
+          id,
+          fullName,
+        });
+        const refreshToken = generateRefreshToken({
+          username: usernameDB,
+          id,
+          fullName,
+        });
         refreshTokens.push(refreshToken);
         response.json({
           accessToken,
           refreshToken,
           username: usernameDB,
-          fullName
+          fullName,
         });
       } else {
         response.status(400).json("Username or password incorrect!");
       }
-    })
+    });
   });
-
- 
 });
 
+/**
+ * Refresh token
+ */
 app.post("/api/refresh", (req: any, res: any) => {
   //take the refresh token from the user
   const refreshToken = req.body.token;
@@ -76,7 +85,7 @@ app.post("/api/refresh", (req: any, res: any) => {
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!");
   }
-  jwt.verify(refreshToken, "myRefreshSecretKey", (err: any, user: any) => {
+  jwt.verify(refreshToken, MY_SECRET_KEY, (err: any, user: any) => {
     err && console.log(err);
     refreshTokens = refreshTokens.filter(
       (token: any) => token !== refreshToken
@@ -92,8 +101,56 @@ app.post("/api/refresh", (req: any, res: any) => {
       refreshToken: newRefreshToken,
     });
   });
+});
 
-  //if everything is ok, create new access token, refresh token and send to user
+/**
+ * Verify token
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+const verify = (req: any, res: any, next: any) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, MY_SECRET_KEY, (err: any, user: any) => {
+      if (err) {
+        return res.status(403).json("Token is not valid!");
+      }
+
+      req.user = user;
+      next();
+    });
+  } else {
+    res.status(401).json("You are not authenticated!");
+  }
+};
+
+/**
+ * API Delete user
+ */
+app.delete("/api/users/:userId", verify, (req: any, res: any) => {
+  if (req.user.id === req.params.userId) {
+    let sql = `Delete From users Where id='${req.user.id}'`;
+
+    db.query(sql, (err) => {
+      if (err) throw err;
+      res.status(200).json("User has been deleted.");
+    });
+  } else {
+    res.status(403).json("You are not allowed to delete this user!");
+  }
+});
+
+/**
+ * API Logout
+ */
+app.post("/api/logout", verify, (req: any, res: any) => {
+  const refreshToken = req.body.token;
+  refreshTokens = refreshTokens.filter((token: any) => token !== refreshToken);
+  res.status(200).json("You logged out successfully.");
 });
 
 app.listen(3000, () => console.log("Backend server is running!"));
