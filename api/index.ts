@@ -8,27 +8,24 @@ import { SALT_ROUNDS } from "./constant";
 
 app.use(express.json());
 
-const users = [
-  {
-    id: "1",
-    username: "john",
-    password: "John0908",
-    isAdmin: true,
-  },
-  {
-    id: "2",
-    username: "jane",
-    password: "Jane0908",
-    isAdmin: false,
-  },
-];
+const generateAccessToken = (user: any) => {
+  return jwt.sign({ id: user.id }, "mySecretKey", {
+    expiresIn: "5s",
+  });
+};
+
+const generateRefreshToken = (user: any) => {
+  return jwt.sign({ id: user.id}, "myRefreshSecretKey");
+};
 
 let refreshTokens: any = [];
+
+let hash: any;
 
 app.post("/api/sign-up", async (req: any, res: any) => {
   const { username, password, fullName } = req.body;
   const id = uuidv4();
-  const hash = await bcrypt.hash(password.toString(), SALT_ROUNDS);
+  hash = await bcrypt.hash(password.toString(), SALT_ROUNDS);
 
   let sql = `INSERT INTO users VALUE ('${id}', '${username}', '${hash}', '${fullName}');`;
 
@@ -41,25 +38,33 @@ app.post("/api/sign-up", async (req: any, res: any) => {
 /**
  * API Login
  */
- app.post("/api/login", (req: any, res: any) => {
+app.post("/api/login", async (req: any, response: any) => {
   const { username, password } = req.body;
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
-  if (user) {
-    //Generate an access token
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-    refreshTokens.push(refreshToken);
-    res.json({
-      username: user.username,
-      isAdmin: user.isAdmin,
-      accessToken,
-      refreshToken,
-    });
-  } else {
-    res.status(400).json("Username or password incorrect!");
-  }
+
+  let sql = `Select *  From users Where username='${username}'`;
+
+  db.query(sql, (err, res) => {
+    if (err) throw err;
+    const {password: passwordDB, username: usernameDB, id, fullName} = res[0]
+
+    bcrypt.compare(password.toString(), passwordDB, (err, result) => {
+      if(result && username ===usernameDB) {
+        const accessToken = generateAccessToken({username: usernameDB, id,fullName });
+        const refreshToken = generateRefreshToken({username: usernameDB, id,fullName});
+        refreshTokens.push(refreshToken);
+        response.json({
+          accessToken,
+          refreshToken,
+          username: usernameDB,
+          fullName
+        });
+      } else {
+        response.status(400).json("Username or password incorrect!");
+      }
+    })
+  });
+
+ 
 });
 
 app.post("/api/refresh", (req: any, res: any) => {
@@ -90,17 +95,5 @@ app.post("/api/refresh", (req: any, res: any) => {
 
   //if everything is ok, create new access token, refresh token and send to user
 });
-
-const generateAccessToken = (user: any) => {
-  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "mySecretKey", {
-    expiresIn: "5s",
-  });
-};
-
-const generateRefreshToken = (user: any) => {
-  return jwt.sign({ id: user.id, isAdmin: user.isAdmin }, "myRefreshSecretKey");
-};
-
-
 
 app.listen(3000, () => console.log("Backend server is running!"));
