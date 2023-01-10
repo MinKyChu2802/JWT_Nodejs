@@ -1,5 +1,4 @@
 import BackGround from "components/background/Background";
-
 import React, {
   FC,
   useRef,
@@ -8,7 +7,6 @@ import React, {
   SyntheticEvent,
   useEffect,
 } from "react";
-
 import {
   useRive,
   useStateMachineInput,
@@ -19,12 +17,14 @@ import {
   RiveState,
   StateMachineInput,
 } from "rive-react";
+import { useForm, Controller } from "react-hook-form";
 
 const STATE_MACHINE_NAME = "Login Machine";
 const LOGIN_PASSWORD = "teddy";
 const LOGIN_TEXT = "Login";
 
 const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
+  const { control, handleSubmit } = useForm();
   const { rive: riveInstance, RiveComponent }: RiveState = useRive({
     src: "/login-teddy.riv",
     stateMachines: STATE_MACHINE_NAME,
@@ -36,8 +36,8 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
     ...riveProps,
   });
 
-  const [userValue, setUserValue] = useState("");
-  const [passValue, setPassValue] = useState("");
+  // const [userValue, setUserValue] = useState("");
+  // const [passValue, setPassValue] = useState("");
   const [inputLookMultiplier, setInputLookMultiplier] = useState(0);
   const [loginButtonText, setLoginButtonText] = useState(LOGIN_TEXT);
   const inputRef = useRef(null);
@@ -82,36 +82,33 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
 
   // As the user types in the username box, update the numLook value to let Teddy know
   // where to look to according to the state machine
-  const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const newVal = e.target.value;
-    setUserValue(newVal);
-    if (!isCheckingInput!.value) {
-      isCheckingInput!.value = true;
-    }
-    const numChars = newVal.length;
-    numLookInput!.value = numChars * inputLookMultiplier;
-  };
+  // const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   const newVal = e.target.value;
+  //   setUserValue(newVal);
+  //   if (!isCheckingInput!.value) {
+  //     isCheckingInput!.value = true;
+  //   }
+  //   const numChars = newVal.length;
+  //   numLookInput!.value = numChars * inputLookMultiplier;
+  // };
 
   // Start Teddy looking in the correct spot along the username input
-  const onUsernameFocus = () => {
-    isCheckingInput!.value = true;
-    if (numLookInput!.value !== userValue.length * inputLookMultiplier) {
-      numLookInput!.value = userValue.length * inputLookMultiplier;
-    }
-  };
+  // const onUsernameFocus = () => {
+  //   isCheckingInput!.value = true;
+  //   if (numLookInput!.value !== userValue.length * inputLookMultiplier) {
+  //     numLookInput!.value = userValue.length * inputLookMultiplier;
+  //   }
+  // };
 
   // When submitting, simulate password validation checking and trigger the appropriate input from the
   // state machine
-  const onSubmit = (e: SyntheticEvent) => {
-    setLoginButtonText("Checking...");
-    setTimeout(() => {
-      setLoginButtonText(LOGIN_TEXT);
-      passValue === LOGIN_PASSWORD
-        ? trigSuccessInput!.fire()
-        : trigFailInput!.fire();
-    }, 1500);
-    e.preventDefault();
-    return false;
+  const onSubmit = () => {
+    // setLoginButtonText("Checking...");
+    // trigSuccessInput!.fire();
+    // setTimeout(() => {
+    //   setLoginButtonText(LOGIN_TEXT);
+    //   trigFailInput!.fire();
+    // }, 1500);
   };
 
   return (
@@ -122,32 +119,61 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
             <RiveComponent className="rive-container" />
           </div>
           <div className="form-container">
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mt-2">
-                <input
-                  type="text"
-                  className="form-username"
+                <Controller
+                  render={({ field: { value, onChange } }) => (
+                    <input
+                      type="text"
+                      className="form-username"
+                      name="username"
+                      placeholder="Username"
+                      onFocus={() => {
+                        isCheckingInput!.value = true;
+                        if (
+                          numLookInput!.value !==
+                          value.length * inputLookMultiplier
+                        ) {
+                          numLookInput!.value =
+                            value.length * inputLookMultiplier;
+                        }
+                      }}
+                      value={value}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        const newVal = e.target.value;
+                        if (!isCheckingInput!.value) {
+                          isCheckingInput!.value = true;
+                        }
+                        const numChars = newVal.length;
+                        numLookInput!.value = numChars * inputLookMultiplier;
+                        onChange(e);
+                      }}
+                      onBlur={() => (isCheckingInput!.value = false)}
+                      ref={inputRef}
+                    />
+                  )}
+                  control={control}
                   name="username"
-                  placeholder="Username"
-                  onFocus={onUsernameFocus}
-                  value={userValue}
-                  onChange={onUsernameChange}
-                  onBlur={() => (isCheckingInput!.value = false)}
-                  ref={inputRef}
+                  defaultValue=""
                 />
               </div>
               <div className="mt-2 mb-2">
-                <input
-                  type="password"
-                  className="form-pass"
+                <Controller
+                  render={({ field: { value, onChange } }) => (
+                    <input
+                      type="password"
+                      className="form-pass"
+                      name="password"
+                      placeholder="Password"
+                      value={value}
+                      onFocus={() => (isHandsUpInput!.value = true)}
+                      onBlur={() => (isHandsUpInput!.value = false)}
+                      onChange={onChange}
+                    />
+                  )}
+                  control={control}
                   name="password"
-                  placeholder="Password (shh.. it's 'teddy')"
-                  value={passValue}
-                  onFocus={() => (isHandsUpInput!.value = true)}
-                  onBlur={() => (isHandsUpInput!.value = false)}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setPassValue(e.target.value)
-                  }
+                  defaultValue=""
                 />
               </div>
               <button className="login-btn">{loginButtonText}</button>

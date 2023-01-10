@@ -76,7 +76,7 @@ app.post("/api/login", async (req: any, response: any) => {
 /**
  * Refresh token
  */
-app.post("/api/refresh", (req: any, res: any) => {
+app.post("/api/refresh-token", (req: any, res: any) => {
   //take the refresh token from the user
   const refreshToken = req.body.token;
 
@@ -129,6 +129,15 @@ const verify = (req: any, res: any, next: any) => {
 };
 
 /**
+ * API Logout
+ */
+app.post("/api/logout", verify, (req: any, res: any) => {
+  const refreshToken = req.body.token;
+  refreshTokens = refreshTokens.filter((token: any) => token !== refreshToken);
+  res.status(200).json("You logged out successfully.");
+});
+
+/**
  * API Delete user
  */
 app.delete("/api/users/:userId", verify, (req: any, res: any) => {
@@ -145,12 +154,21 @@ app.delete("/api/users/:userId", verify, (req: any, res: any) => {
 });
 
 /**
- * API Logout
+ * API update
  */
-app.post("/api/logout", verify, (req: any, res: any) => {
-  const refreshToken = req.body.token;
-  refreshTokens = refreshTokens.filter((token: any) => token !== refreshToken);
-  res.status(200).json("You logged out successfully.");
+app.put("/api/users/:userId", verify, (req: any, res: any) => {
+  if (req.params.userId) {
+    let sql = `UPDATE users
+    SET fullName = "${req.body.fullName}"
+    WHERE id = "${req.params.userId}"`;
+
+    db.query(sql, (err) => {
+      if (err) throw err;
+      res.status(200).json("User has been updated.");
+    });
+  } else {
+    res.status(403).json("You are not allowed to delete this user!");
+  }
 });
 
-app.listen(3000, () => console.log("Backend server is running!"));
+app.listen(4000, () => console.log("Backend server is running!"));
