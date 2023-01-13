@@ -1,12 +1,5 @@
 import BackGround from "components/background/Background";
-import React, {
-  FC,
-  useRef,
-  useState,
-  ChangeEvent,
-  SyntheticEvent,
-  useEffect,
-} from "react";
+import React, { FC, useRef, useState, ChangeEvent, useEffect } from "react";
 import {
   useRive,
   useStateMachineInput,
@@ -18,13 +11,18 @@ import {
   StateMachineInput,
 } from "rive-react";
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
+import { apiURL } from "routes/apiURL";
+import { useRouter } from "next/router";
+import { useStore } from "store";
 
 const STATE_MACHINE_NAME = "Login Machine";
-const LOGIN_PASSWORD = "teddy";
 const LOGIN_TEXT = "Login";
 
 const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
   const { control, handleSubmit } = useForm();
+  const router = useRouter();
+  const { update } = useStore();
   const { rive: riveInstance, RiveComponent }: RiveState = useRive({
     src: "/login-teddy.riv",
     stateMachines: STATE_MACHINE_NAME,
@@ -80,35 +78,38 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputRef]);
 
-  // As the user types in the username box, update the numLook value to let Teddy know
-  // where to look to according to the state machine
-  // const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   const newVal = e.target.value;
-  //   setUserValue(newVal);
-  //   if (!isCheckingInput!.value) {
-  //     isCheckingInput!.value = true;
-  //   }
-  //   const numChars = newVal.length;
-  //   numLookInput!.value = numChars * inputLookMultiplier;
-  // };
-
-  // Start Teddy looking in the correct spot along the username input
-  // const onUsernameFocus = () => {
-  //   isCheckingInput!.value = true;
-  //   if (numLookInput!.value !== userValue.length * inputLookMultiplier) {
-  //     numLookInput!.value = userValue.length * inputLookMultiplier;
-  //   }
-  // };
-
   // When submitting, simulate password validation checking and trigger the appropriate input from the
   // state machine
-  const onSubmit = () => {
-    // setLoginButtonText("Checking...");
-    // trigSuccessInput!.fire();
-    // setTimeout(() => {
-    //   setLoginButtonText(LOGIN_TEXT);
-    //   trigFailInput!.fire();
-    // }, 1500);
+  const onSubmit = (data: any) => {
+    const { username, password } = data;
+
+    setLoginButtonText("Checking...");
+
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_SITE_URL_BE}${apiURL.signIn()}`,
+        {
+          username,
+          password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response: any) => {
+        localStorage.setItem("accessToken", response.data.accessToken);
+        setLoginButtonText("Done");
+        trigSuccessInput!.fire();
+        update(response.data);
+        router.push("/admin/dashboard");
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoginButtonText(LOGIN_TEXT);
+        trigFailInput!.fire();
+      });
   };
 
   return (

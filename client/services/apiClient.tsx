@@ -1,8 +1,9 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
-let token = localStorage.getItem('accessToken');
+let token = localStorage.getItem("accessToken");
 
-const {NEXT_PUBLIC_SITE_URL_BE} = process.env
+const { NEXT_PUBLIC_SITE_URL_BE } = process.env;
 
 const api = axios.create({
   baseURL: NEXT_PUBLIC_SITE_URL_BE,
@@ -22,7 +23,9 @@ const refreshToken = async () => {
   refreshingToken = true;
 
   try {
-    const response = await axios.post(`${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`);
+    const response = await axios.post(
+      `${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`
+    );
     token = response.data.token;
     api.defaults.headers["Authorization"] = `Bearer ${token}`;
     originalRequests.forEach((request) => {
@@ -32,6 +35,7 @@ const refreshToken = async () => {
     originalRequests.length = 0;
   } catch (error) {
     console.error(error);
+    toast("Lỗi rồi");
   } finally {
     refreshingToken = false;
   }
@@ -55,9 +59,58 @@ api.interceptors.response.use(
   }
 );
 
-export const get = (url: string, config = {}) => api.get(url, config);
-export const post = (url: string, data = {}, config = {}) =>
-  api.post(url, data, config);
-export const put = (url: string, data = {}, config = {}) =>
-  api.put(url, data, config);
-export const remove = (url: string, config = {}) => api.delete(url, config);
+// API GET
+export const get = (
+  url: string,
+  config = {},
+  successCallback: (response: any) => void,
+  errCallback?: (err: any) => void
+) =>
+  api
+    .get(url, config)
+    .then((response) => successCallback(response.data))
+    .catch((error) => errCallback?.(error));
+// API POST
+export const post = (
+  url: string,
+  data = {},
+  config = {},
+  successCallback: (response: any) => void,
+  errCallback?: (err: any) => void
+) =>
+  api
+    .post(url, data, config)
+    .then((response) => successCallback(response.data))
+    .catch((error) => {
+      errCallback?.(error);
+      toast("Lỗi rồi");
+    });
+//API PUT
+export const put = (
+  url: string,
+  data = {},
+  config = {},
+  successCallback: (response: any) => void,
+  errCallback?: (err: any) => void
+) =>
+  api
+    .put(url, data, config)
+    .then((response) => successCallback(response.data))
+    .catch((error) => {
+      errCallback?.(error);
+      toast("Lỗi rồi");
+    });
+// API DELETE
+export const remove = (
+  url: string,
+  config = {},
+  successCallback: (response: any) => void,
+  errCallback?: (err: any) => void
+) =>
+  api
+    .delete(url, config)
+    .then((response) => successCallback(response.data))
+    .catch((error) => {
+      errCallback?.(error);
+      toast("Lỗi rồi");
+    });

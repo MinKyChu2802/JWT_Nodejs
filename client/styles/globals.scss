@@ -5,6 +5,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap");
 
 @import "./signIn";
+@import "react-toastify/dist/ReactToastify.css";
 
 * {
   margin: 0px;
@@ -16,8 +17,8 @@ body {
 }
 
 .area {
-  background: #D6E2EA;
-  background: -webkit-linear-gradient(to left, #8f94fb, #D6E2EA);
+  background: #d6e2ea;
+  background: -webkit-linear-gradient(to left, #8f94fb, #d6e2ea);
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -41,7 +42,7 @@ body {
   list-style: none;
   width: 20px;
   height: 20px;
-  background: rgba($color: #B04863, $alpha: 0.2);
+  background: rgba($color: #b04863, $alpha: 0.2);
   animation: animate 25s linear infinite;
   bottom: -150px;
 }

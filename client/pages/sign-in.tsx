@@ -1,8 +1,9 @@
-import SignIn from 'components/signIn/SignIn'
-import React from 'react'
+import SignIn from "components/signIn/SignIn";
+import { NextPage } from "next";
+import React from "react";
 
-const signIn = () => {
-  return <SignIn />
-}
+const SignInPage: NextPage = () => {
+  return <SignIn />;
+};
 
-export default signIn
+export default SignInPage;

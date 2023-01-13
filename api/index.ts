@@ -5,7 +5,14 @@ import db from "./db";
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { MY_SECRET_KEY, SALT_ROUNDS } from "./constant";
-
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 const generateAccessToken = (user: any) => {
