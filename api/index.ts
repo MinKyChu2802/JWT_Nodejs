@@ -51,13 +51,19 @@ app.post("/api/sign-up", async (req: any, res: any) => {
  * API Login user account
  */
 app.post("/api/login", async (req: any, response: any) => {
-  const { username, password, isAdmin } = req.body;
+  const { username, password } = req.body;
 
-  let sql = `Select *  From users Where username='${username}' And isAdmin='${isAdmin}'`;
+  let sql = `Select *  From users Where username='${username}'`;
 
   db.query(sql, (err, res) => {
     if (err) throw err;
-    const { password: passwordDB, username: usernameDB, id, fullName } = res[0];
+    const {
+      password: passwordDB,
+      username: usernameDB,
+      id,
+      fullName,
+      isAdmin,
+    } = res[0];
 
     bcrypt.compare(password.toString(), passwordDB, (err, result) => {
       if (result && username === usernameDB) {
@@ -77,6 +83,7 @@ app.post("/api/login", async (req: any, response: any) => {
           refreshToken,
           username: usernameDB,
           fullName,
+          isAdmin,
         });
       } else {
         response.status(400).json("Username or password incorrect!");
@@ -187,6 +194,74 @@ app.put("/api/users/:usersId", verify, (req: any, res: any) => {
 /**
  * API get list blogs
  */
-app.get("/api/blogs");
+app.get("/api/blogs", verify, (req: any, response: any) => {
+  let sql = `Select *  From blogs`;
+
+  db.query(sql, (err, res) => {
+    if (err) throw err;
+    response.status(200).json(res);
+  });
+});
+
+/**
+ * API add blogs to list
+ */
+app.post("/api/blogs", verify, (req: any, response: any) => {
+  const { title, thumbnail, content, summary } = req.body;
+  const id = uuidv4();
+  let sql = `INSERT INTO blogs VALUE ('${id}', '${title}', '${thumbnail}', '${content}', '${summary}');`;
+
+  db.query(sql, (err, _) => {
+    if (err) throw err;
+    response.json({ id, title, thumbnail, content, summary });
+  });
+});
+
+/**
+ * API update blogs to list
+ */
+app.put("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  const { title, thumbnail, content, summary } = req.body;
+  let sql = `UPDATE blogs
+    SET title = "${title}", thumbnail = "${thumbnail}", content = "${content}", summary = "${summary}"
+    WHERE id = "${req.params.blogId}"`;
+
+  db.query(sql, (err, _) => {
+    if (err) throw err;
+    response.json({ title, thumbnail, content, summary });
+  });
+});
+
+/**
+ * API delete blogs in list
+ */
+app.delete("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  if (req.params.blogId) {
+    let sql = `Delete From blogs Where id='${req.params.blogId}'`;
+
+    db.query(sql, (err) => {
+      if (err) throw err;
+      response.status(200).json("Blog has been deleted.");
+    });
+  } else {
+    response.status(403).json("You are not allowed to delete this user!");
+  }
+});
+
+/**
+ * API get detail blog
+ */
+app.get("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  if (req.params.blogId) {
+    let sql = `Select * From blogs Where id='${req.params.blogId}'`;
+
+    db.query(sql, (err, res) => {
+      if (err) throw err;
+      response.status(200).json(res);
+    });
+  } else {
+    response.status(403).json("You are not allowed to delete this user!");
+  }
+});
 
 app.listen(4000, () => console.log("Backend server is running!"));
