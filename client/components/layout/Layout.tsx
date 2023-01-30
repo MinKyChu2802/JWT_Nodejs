@@ -10,10 +10,10 @@ interface Props {
 const Layout: NextPage<Props> = (props: Props) => {
   const { children } = props
   return (
-    <div className="bg-primary min-h-screen flex flex-col items-start">
+    <div className="bg-primary min-h-screen flex flex-col items-start px-4">
       <Header />
 
-      <div className="max-w-[1200px] mx-auto mt-[250px] w-full">{children}</div>
+      <div className="max-w-[1200px] mx-auto mt-[220px] w-full">{children}</div>
 
       <Footer />
     </div>

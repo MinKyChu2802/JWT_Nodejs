@@ -1,14 +1,15 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { isSsr } from 'utils/common'
 
-let token = localStorage.getItem('accessToken')
+const getToken = () => (isSsr ? '' : localStorage.getItem('accessToken'))
 
 const { NEXT_PUBLIC_SITE_URL_BE } = process.env
 
 const api = axios.create({
   baseURL: NEXT_PUBLIC_SITE_URL_BE,
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `Bearer ${getToken()}`,
   },
 })
 
@@ -24,7 +25,8 @@ const refreshToken = async () => {
 
   try {
     const response = await axios.post(`${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`)
-    token = response.data.token
+    const token = response.data.token
+    localStorage.setItem('accessToken', token)
     api.defaults.headers['Authorization'] = `Bearer ${token}`
     originalRequests.forEach((request) => {
       request.headers['Authorization'] = `Bearer ${token}`
@@ -68,6 +70,7 @@ export const get = (
     .get(url, config)
     .then((response) => successCallback(response.data))
     .catch((error) => errCallback?.(error))
+
 // API POST
 export const post = (
   url: string,
@@ -83,7 +86,8 @@ export const post = (
       errCallback?.(error)
       toast('Lỗi rồi')
     })
-//API PUT
+
+// API PUT
 export const put = (
   url: string,
   data = {},
@@ -98,6 +102,7 @@ export const put = (
       errCallback?.(error)
       toast('Lỗi rồi')
     })
+
 // API DELETE
 export const remove = (
   url: string,

@@ -15,3 +15,5 @@ export const RESPONSIVE_OPTIONS = [
     numScroll: 1,
   },
 ]
+
+export const isSsr = typeof window === 'undefined'

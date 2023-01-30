@@ -1,5 +1,5 @@
 import { UserInfo } from 'types/common'
-import create from 'zustand'
+import { create } from 'zustand'
 
 export const useStore = create<{
   userInfo: UserInfo | null

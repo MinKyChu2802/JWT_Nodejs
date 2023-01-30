@@ -5,7 +5,7 @@ import logo from 'assets/avatar.png'
 
 const Header: NextPage = () => {
   return (
-    <div className="Header bg-primary w-full flex justify-between items-center p-4 max-w-[1200px] m-auto top-0 left-0 right-0 fixed z-50">
+    <div className="Header bg-primary w-full flex justify-between items-center p-4 pb-2 max-w-[1200px] m-auto top-0 left-0 right-0 fixed z-50">
       <div>
         <Image
           src={logo}

@@ -12,7 +12,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@hookform/resolvers": "^2.9.10",
+    "@mui/material": "^5.11.6",
     "@next/font": "13.0.7",
     "@types/node": "18.11.15",
     "@types/react": "18.0.26",
@@ -29,7 +32,6 @@
     "primereact": "^8.7.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-grid-gallery": "^1.0.0",
     "react-hook-form": "^7.41.5",
     "react-toastify": "^9.1.1",
     "rive-react": "^3.0.34",
