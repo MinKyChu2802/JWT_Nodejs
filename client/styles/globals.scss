@@ -6,6 +6,7 @@
 
 @import "./signIn";
 @import "react-toastify/dist/ReactToastify.css";
+@import "~aos/dist/aos.css";
 
 * {
   margin: 0px;
@@ -126,4 +127,8 @@ body {
     opacity: 0;
     border-radius: 50%;
   }
+}
+
+.product-image {
+  height: 300px !important;
 }
