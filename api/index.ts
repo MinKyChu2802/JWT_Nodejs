@@ -197,25 +197,23 @@ app.put("/api/users/:usersId", verify, (req: any, res: any) => {
 app.get("/api/blogs", verify, (req: any, response: any) => {
   const { page = 1, pageSize = 10, sort = "id", filter = "" } = req.query;
   let sql = `Select *  From blogs`;
-  let queryParams:any = [];
+  let queryParamsArr: any = ["title", "content", "summary"];
+  let queryParams: any = [];
+  // Apply filter
+  if (filter) {
+    sql += ` WHERE ${queryParamsArr.join(` Like ${filter} Or `)}`;
+  }
 
-  db.query(sql, (err, res) => {
+  // Apply sorting
+  sql += ` ORDER BY ${sort}`;
+
+  // Apply paging
+  const startIndex = (page - 1) * pageSize;
+  sql += ` LIMIT ?, ?`;
+  queryParams.push(startIndex, pageSize);
+
+  db.query(sql, queryParams, (err, res) => {
     if (err) throw err;
-
-    // Apply filter
-    if (filter) {
-      sql += ` WHERE name LIKE ?`;
-      queryParams.push(`%${filter}%`);
-    }
-
-    // Apply sorting
-    sql += ` ORDER BY ${sort}`;
-
-    // Apply paging
-    const startIndex = (page - 1) * pageSize;
-    sql += ` LIMIT ?, ?`;
-    queryParams.push(startIndex, pageSize);
-
     response.status(200).json({ data: res, page, pageSize });
   });
 });
