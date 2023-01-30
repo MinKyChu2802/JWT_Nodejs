@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { MY_SECRET_KEY, SALT_ROUNDS } from "./constant";
 const cors = require("cors");
+
 app.use(
   cors({
     origin: "*",
@@ -29,26 +30,30 @@ let refreshTokens: any = [];
 
 let hash: any;
 
+// -----------Users-----------------
+/**
+ * API create users account
+ */
 app.post("/api/sign-up", async (req: any, res: any) => {
-  const { username, password, fullName } = req.body;
+  const { username, password, fullName, isAdmin } = req.body;
   const id = uuidv4();
   hash = await bcrypt.hash(password.toString(), SALT_ROUNDS);
 
-  let sql = `INSERT INTO users VALUE ('${id}', '${username}', '${hash}', '${fullName}');`;
+  let sql = `INSERT INTO users VALUE ('${id}', '${username}', '${hash}', '${fullName}', '${isAdmin}');`;
 
   db.query(sql, (err, _) => {
     if (err) throw err;
-    res.json({ id, username, fullName });
+    res.json({ id, username, fullName, isAdmin });
   });
 });
 
 /**
- * API Login
+ * API Login user account
  */
 app.post("/api/login", async (req: any, response: any) => {
-  const { username, password } = req.body;
+  const { username, password, isAdmin } = req.body;
 
-  let sql = `Select *  From users Where username='${username}'`;
+  let sql = `Select *  From users Where username='${username}' And isAdmin='${isAdmin}'`;
 
   db.query(sql, (err, res) => {
     if (err) throw err;
@@ -163,11 +168,11 @@ app.delete("/api/users/:userId", verify, (req: any, res: any) => {
 /**
  * API update
  */
-app.put("/api/users/:userId", verify, (req: any, res: any) => {
-  if (req.params.userId) {
+app.put("/api/users/:usersId", verify, (req: any, res: any) => {
+  if (req.params.usersId) {
     let sql = `UPDATE users
     SET fullName = "${req.body.fullName}"
-    WHERE id = "${req.params.userId}"`;
+    WHERE id = "${req.params.usersId}"`;
 
     db.query(sql, (err) => {
       if (err) throw err;
@@ -177,5 +182,11 @@ app.put("/api/users/:userId", verify, (req: any, res: any) => {
     res.status(403).json("You are not allowed to delete this user!");
   }
 });
+
+//-----------ADMIN---------------
+/**
+ * API get list blogs
+ */
+app.get("/api/blogs");
 
 app.listen(4000, () => console.log("Backend server is running!"));

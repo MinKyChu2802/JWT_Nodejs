@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^5.0.6",
     "@hookform/resolvers": "^2.9.10",
     "@next/font": "13.0.7",
     "@types/node": "18.11.15",
