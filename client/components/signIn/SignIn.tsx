@@ -1,5 +1,5 @@
-import BackGround from "components/background/Background";
-import React, { FC, useRef, useState, ChangeEvent, useEffect } from "react";
+import Background from 'components/background/Background'
+import React, { FC, useRef, useState, ChangeEvent, useEffect } from 'react'
 import {
   useRive,
   useStateMachineInput,
@@ -9,22 +9,22 @@ import {
   UseRiveParameters,
   RiveState,
   StateMachineInput,
-} from "rive-react";
-import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
-import { apiURL } from "routes/apiURL";
-import { useRouter } from "next/router";
-import { useStore } from "store";
+} from 'rive-react'
+import { useForm, Controller } from 'react-hook-form'
+import axios from 'axios'
+import { apiURL } from 'routes/apiURL'
+import { useRouter } from 'next/router'
+import { useStore } from 'store'
 
-const STATE_MACHINE_NAME = "Login Machine";
-const LOGIN_TEXT = "Login";
+const STATE_MACHINE_NAME = 'Login Machine'
+const LOGIN_TEXT = 'Login'
 
 const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
-  const { control, handleSubmit } = useForm();
-  const router = useRouter();
-  const { update } = useStore();
+  const { control, handleSubmit } = useForm()
+  const router = useRouter()
+  const { update } = useStore()
   const { rive: riveInstance, RiveComponent }: RiveState = useRive({
-    src: "/login-teddy.riv",
+    src: '/login-teddy.riv',
     stateMachines: STATE_MACHINE_NAME,
     autoplay: true,
     layout: new Layout({
@@ -32,58 +32,40 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
       alignment: Alignment.Center,
     }),
     ...riveProps,
-  });
+  })
 
   // const [userValue, setUserValue] = useState("");
   // const [passValue, setPassValue] = useState("");
-  const [inputLookMultiplier, setInputLookMultiplier] = useState(0);
-  const [loginButtonText, setLoginButtonText] = useState(LOGIN_TEXT);
-  const inputRef = useRef(null);
+  const [inputLookMultiplier, setInputLookMultiplier] = useState(0)
+  const [loginButtonText, setLoginButtonText] = useState(LOGIN_TEXT)
+  const inputRef = useRef(null)
 
-  const isCheckingInput: StateMachineInput | null = useStateMachineInput(
-    riveInstance,
-    STATE_MACHINE_NAME,
-    "isChecking"
-  );
-  const numLookInput: StateMachineInput | null = useStateMachineInput(
-    riveInstance,
-    STATE_MACHINE_NAME,
-    "numLook"
-  );
+  const isCheckingInput: StateMachineInput | null = useStateMachineInput(riveInstance, STATE_MACHINE_NAME, 'isChecking')
+  const numLookInput: StateMachineInput | null = useStateMachineInput(riveInstance, STATE_MACHINE_NAME, 'numLook')
   const trigSuccessInput: StateMachineInput | null = useStateMachineInput(
     riveInstance,
     STATE_MACHINE_NAME,
-    "trigSuccess"
-  );
-  const trigFailInput: StateMachineInput | null = useStateMachineInput(
-    riveInstance,
-    STATE_MACHINE_NAME,
-    "trigFail"
-  );
-  const isHandsUpInput: StateMachineInput | null = useStateMachineInput(
-    riveInstance,
-    STATE_MACHINE_NAME,
-    "isHandsUp"
-  );
+    'trigSuccess'
+  )
+  const trigFailInput: StateMachineInput | null = useStateMachineInput(riveInstance, STATE_MACHINE_NAME, 'trigFail')
+  const isHandsUpInput: StateMachineInput | null = useStateMachineInput(riveInstance, STATE_MACHINE_NAME, 'isHandsUp')
 
   // Divide the input width by the max value the state machine looks for in numLook.
   // This gets us a multiplier we can apply for each character typed in the input
   // to help Teddy track progress along the input line
   useEffect(() => {
     if (inputRef?.current && !inputLookMultiplier) {
-      setInputLookMultiplier(
-        (inputRef.current as HTMLInputElement).offsetWidth / 100
-      );
+      setInputLookMultiplier((inputRef.current as HTMLInputElement).offsetWidth / 100)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputRef]);
+  }, [inputRef])
 
   // When submitting, simulate password validation checking and trigger the appropriate input from the
   // state machine
   const onSubmit = (data: any) => {
-    const { username, password } = data;
+    const { username, password } = data
 
-    setLoginButtonText("Checking...");
+    setLoginButtonText('Checking...')
 
     axios
       .post(
@@ -94,26 +76,26 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
         },
         {
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         }
       )
       .then((response: any) => {
-        localStorage.setItem("accessToken", response.data.accessToken);
-        setLoginButtonText("Done");
-        trigSuccessInput!.fire();
-        update(response.data);
-        router.push("/admin/dashboard");
+        localStorage.setItem('accessToken', response.data.accessToken)
+        setLoginButtonText('Done')
+        trigSuccessInput!.fire()
+        update(response.data)
+        router.push('/admin/dashboard')
       })
       .catch((error) => {
-        console.error(error);
-        setLoginButtonText(LOGIN_TEXT);
-        trigFailInput!.fire();
-      });
-  };
+        console.error(error)
+        setLoginButtonText(LOGIN_TEXT)
+        trigFailInput!.fire()
+      })
+  }
 
   return (
-    <BackGround>
+    <Background>
       <div className="login-form-component-root">
         <div className="login-form-wrapper">
           <div className="rive-wrapper">
@@ -130,24 +112,20 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
                       name="username"
                       placeholder="Username"
                       onFocus={() => {
-                        isCheckingInput!.value = true;
-                        if (
-                          numLookInput!.value !==
-                          value.length * inputLookMultiplier
-                        ) {
-                          numLookInput!.value =
-                            value.length * inputLookMultiplier;
+                        isCheckingInput!.value = true
+                        if (numLookInput!.value !== value.length * inputLookMultiplier) {
+                          numLookInput!.value = value.length * inputLookMultiplier
                         }
                       }}
                       value={value}
                       onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                        const newVal = e.target.value;
+                        const newVal = e.target.value
                         if (!isCheckingInput!.value) {
-                          isCheckingInput!.value = true;
+                          isCheckingInput!.value = true
                         }
-                        const numChars = newVal.length;
-                        numLookInput!.value = numChars * inputLookMultiplier;
-                        onChange(e);
+                        const numChars = newVal.length
+                        numLookInput!.value = numChars * inputLookMultiplier
+                        onChange(e)
                       }}
                       onBlur={() => (isCheckingInput!.value = false)}
                       ref={inputRef}
@@ -182,8 +160,8 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
           </div>
         </div>
       </div>
-    </BackGround>
-  );
-};
+    </Background>
+  )
+}
 
-export default SignIn;
+export default SignIn

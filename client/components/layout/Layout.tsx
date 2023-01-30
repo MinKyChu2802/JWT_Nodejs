@@ -1,14 +1,14 @@
-import Footer from "components/footer/Footer";
-import Header from "components/header/Header";
-import { NextPage } from "next/types";
-import React from "react";
+import Footer from 'components/footer/Footer'
+import Header from 'components/header/Header'
+import { NextPage } from 'next/types'
+import React from 'react'
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const Layout: NextPage<Props> = (props: Props) => {
-  const { children } = props;
+  const { children } = props
   return (
     <div className="bg-primary min-h-screen flex flex-col items-start">
       <Header />
@@ -17,7 +17,7 @@ const Layout: NextPage<Props> = (props: Props) => {
 
       <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default Layout;
+export default Layout

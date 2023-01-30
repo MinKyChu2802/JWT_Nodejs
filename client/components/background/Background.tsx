@@ -1,9 +1,10 @@
-import React, { FC } from "react";
+import React, { FC } from 'react'
 
 interface Props {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
-const BackGround: FC<Props> = ({ children }: Props) => {
+
+const Background: FC<Props> = ({ children }: Props) => {
   return (
     <div className="area">
       <ul className="circles">
@@ -20,7 +21,7 @@ const BackGround: FC<Props> = ({ children }: Props) => {
       </ul>
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default BackGround;
+export default Background

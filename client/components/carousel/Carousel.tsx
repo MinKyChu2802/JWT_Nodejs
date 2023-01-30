@@ -1,15 +1,15 @@
-import { NextPage } from "next";
-import React from "react";
-import { Carousel as CarouselComponent } from "primereact/carousel";
+import { NextPage } from 'next'
+import React from 'react'
+import { Carousel as CarouselComponent } from 'primereact/carousel'
 
 interface Props {
-  value: any;
-  itemTemplate?: any;
-  responsiveOptions?: any;
+  value: any
+  itemTemplate?: any
+  responsiveOptions?: any
 }
 
 const Carousel: NextPage<Props> = (props: Props) => {
-  const { value, itemTemplate, responsiveOptions } = props;
+  const { value, itemTemplate, responsiveOptions } = props
 
   return (
     <CarouselComponent
@@ -22,7 +22,7 @@ const Carousel: NextPage<Props> = (props: Props) => {
       numScroll={1}
       // circular
     ></CarouselComponent>
-  );
-};
+  )
+}
 
-export default Carousel;
+export default Carousel
