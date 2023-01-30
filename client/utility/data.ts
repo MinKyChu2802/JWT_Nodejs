@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4";
+import { uuid } from 'uuidv4'
 
 export const VALUE = {
   data: [
@@ -6,8 +6,7 @@ export const VALUE = {
       //   id: uuid(),
       //   name: "Bamboo Watch",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 65,
       //   category: "Accessories",
       //   quantity: 24,
@@ -19,8 +18,7 @@ export const VALUE = {
       //   code: "nvklal433",
       //   name: "Black Watch",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 72,
       //   category: "Accessories",
       //   quantity: 61,
@@ -32,8 +30,7 @@ export const VALUE = {
       //   code: "zz21cz3c1",
       //   name: "Blue Band",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 79,
       //   category: "Fitness",
       //   quantity: 2,
@@ -45,8 +42,7 @@ export const VALUE = {
       //   code: "244wgerg2",
       //   name: "Blue T-Shirt",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 29,
       //   category: "Clothing",
       //   quantity: 25,
@@ -58,8 +54,7 @@ export const VALUE = {
       //   code: "h456wer53",
       //   name: "Bracelet",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 15,
       //   category: "Accessories",
       //   quantity: 73,
@@ -71,8 +66,7 @@ export const VALUE = {
       //   code: "av2231fwg",
       //   name: "Brown Purse",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 120,
       //   category: "Accessories",
       //   quantity: 0,
@@ -84,8 +78,7 @@ export const VALUE = {
       //   code: "bib36pfvm",
       //   name: "Chakra Bracelet",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 32,
       //   category: "Accessories",
       //   quantity: 5,
@@ -97,8 +90,7 @@ export const VALUE = {
       //   code: "mbvjkgip5",
       //   name: "Galaxy Earrings",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 34,
       //   category: "Accessories",
       //   quantity: 23,
@@ -110,8 +102,7 @@ export const VALUE = {
       //   code: "vbb124btr",
       //   name: "Game Controller",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 99,
       //   category: "Electronics",
       //   quantity: 2,
@@ -123,8 +114,7 @@ export const VALUE = {
       //   code: "cm230f032",
       //   name: "Gaming Set",
       //   description: "Product Description",
-      image:
-        "https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg",
+      image: 'https://cdn.tgdd.vn/Files/2021/06/20/1361688/imacm1_1200x800-800-resize.jpg',
       //   price: 299,
       //   category: "Electronics",
       //   quantity: 63,
@@ -132,31 +122,30 @@ export const VALUE = {
       //   rating: 3,
     },
   ],
-};
-
+}
 
 export const IMAGES = [
   {
-     src: "https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg",
-     width: 320,
-     height: 174,
-     isSelected: true,
-     caption: "After Rain (Jeshu John - designerspics.com)",
+    src: 'https://c2.staticflickr.com/9/8817/28973449265_07e3aa5d2e_b.jpg',
+    width: 320,
+    height: 174,
+    isSelected: true,
+    caption: 'After Rain (Jeshu John - designerspics.com)',
   },
   {
-     src: "https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg",
-     width: 320,
-     height: 212,
-     tags: [
-        { value: "Ocean", title: "Ocean" },
-        { value: "People", title: "People" },
-     ],
-     alt: "Boats (Jeshu John - designerspics.com)",
+    src: 'https://c2.staticflickr.com/9/8356/28897120681_3b2c0f43e0_b.jpg',
+    width: 320,
+    height: 212,
+    tags: [
+      { value: 'Ocean', title: 'Ocean' },
+      { value: 'People', title: 'People' },
+    ],
+    alt: 'Boats (Jeshu John - designerspics.com)',
   },
 
   {
-     src: "https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg",
-     width: 320,
-     height: 212,
+    src: 'https://c4.staticflickr.com/9/8887/28897124891_98c4fdd82b_b.jpg',
+    width: 320,
+    height: 212,
   },
-];
+]

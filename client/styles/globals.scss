@@ -2,11 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&display=swap');
 
-@import "./signIn";
-@import "react-toastify/dist/ReactToastify.css";
-@import "~aos/dist/aos.css";
+@import './signIn';
+@import 'react-toastify/dist/ReactToastify.css';
+@import '~aos/dist/aos.css';
 
 * {
   margin: 0px;
@@ -14,7 +14,7 @@
 }
 
 body {
-  font-family: "Mulish", sans-serif;
+  font-family: 'Mulish', sans-serif;
 }
 
 .area {

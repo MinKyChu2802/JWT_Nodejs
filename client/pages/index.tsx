@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import About from "components/about/About";
-import Carousel from "components/carousel/Carousel";
-import Gallery from "components/gallery/Gallery";
-import Layout from "components/layout/Layout";
-import { RESPONSIVE_OPTIONS } from "utility/common";
-import { IMAGES, VALUE } from "utility/data";
+import About from 'components/about/About'
+import Carousel from 'components/carousel/Carousel'
+import Gallery from 'components/gallery/Gallery'
+import Layout from 'components/layout/Layout'
+import { RESPONSIVE_OPTIONS } from 'utility/common'
+import { IMAGES, VALUE } from 'utility/data'
 
 export default function Home() {
   const productTemplate = (product: any) => {
@@ -22,8 +22,8 @@ export default function Home() {
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <Layout>
@@ -38,5 +38,5 @@ export default function Home() {
         <Gallery images={IMAGES} />
       </div>
     </Layout>
-  );
+  )
 }

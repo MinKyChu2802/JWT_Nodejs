@@ -1,9 +1,9 @@
-import Dashbroad from "components/dashbroad/Dashbroad";
-import withAuth from "hoc/WithAuth";
-import React from "react";
+import Dashboard from 'components/dashboard/Dashboard'
+import withAuth from 'hoc/WithAuth'
+import React from 'react'
 
 const DashboardPage: any = () => {
-  return <Dashbroad />;
-};
+  return <Dashboard />
+}
 
-export default withAuth(DashboardPage);
+export default withAuth(DashboardPage)

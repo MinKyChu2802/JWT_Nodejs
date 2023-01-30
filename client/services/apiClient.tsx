@@ -1,63 +1,61 @@
-import axios from "axios";
-import { toast } from "react-toastify";
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
-let token = localStorage.getItem("accessToken");
+let token = localStorage.getItem('accessToken')
 
-const { NEXT_PUBLIC_SITE_URL_BE } = process.env;
+const { NEXT_PUBLIC_SITE_URL_BE } = process.env
 
 const api = axios.create({
   baseURL: NEXT_PUBLIC_SITE_URL_BE,
   headers: {
     Authorization: `Bearer ${token}`,
   },
-});
+})
 
-const originalRequests: any[] = [];
-let refreshingToken = false;
+const originalRequests: any[] = []
+let refreshingToken = false
 
 const refreshToken = async () => {
   if (refreshingToken) {
-    return;
+    return
   }
 
-  refreshingToken = true;
+  refreshingToken = true
 
   try {
-    const response = await axios.post(
-      `${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`
-    );
-    token = response.data.token;
-    api.defaults.headers["Authorization"] = `Bearer ${token}`;
+    const response = await axios.post(`${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`)
+    token = response.data.token
+    api.defaults.headers['Authorization'] = `Bearer ${token}`
     originalRequests.forEach((request) => {
-      request.headers["Authorization"] = `Bearer ${token}`;
-      api(request);
-    });
-    originalRequests.length = 0;
+      request.headers['Authorization'] = `Bearer ${token}`
+      api(request)
+    })
+    originalRequests.length = 0
   } catch (error) {
-    console.error(error);
-    toast("Lỗi rồi");
+    console.error(error)
+    toast('Lỗi rồi')
   } finally {
-    refreshingToken = false;
+    refreshingToken = false
   }
-};
+}
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    const { config, response } = error;
-    const originalRequest = config;
+    const { config, response } = error
+    const originalRequest = config
 
     if (response.status === 401) {
-      originalRequests.push(originalRequest);
+      originalRequests.push(originalRequest)
       if (!refreshingToken) {
-        refreshToken();
+        refreshToken()
       }
-      return Promise.reject(error);
+      return Promise.reject(error)
     }
 
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-);
+)
 
 // API GET
 export const get = (
@@ -69,7 +67,7 @@ export const get = (
   api
     .get(url, config)
     .then((response) => successCallback(response.data))
-    .catch((error) => errCallback?.(error));
+    .catch((error) => errCallback?.(error))
 // API POST
 export const post = (
   url: string,
@@ -82,9 +80,9 @@ export const post = (
     .post(url, data, config)
     .then((response) => successCallback(response.data))
     .catch((error) => {
-      errCallback?.(error);
-      toast("Lỗi rồi");
-    });
+      errCallback?.(error)
+      toast('Lỗi rồi')
+    })
 //API PUT
 export const put = (
   url: string,
@@ -97,9 +95,9 @@ export const put = (
     .put(url, data, config)
     .then((response) => successCallback(response.data))
     .catch((error) => {
-      errCallback?.(error);
-      toast("Lỗi rồi");
-    });
+      errCallback?.(error)
+      toast('Lỗi rồi')
+    })
 // API DELETE
 export const remove = (
   url: string,
@@ -111,6 +109,6 @@ export const remove = (
     .delete(url, config)
     .then((response) => successCallback(response.data))
     .catch((error) => {
-      errCallback?.(error);
-      toast("Lỗi rồi");
-    });
+      errCallback?.(error)
+      toast('Lỗi rồi')
+    })
