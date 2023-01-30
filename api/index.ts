@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { MY_SECRET_KEY, SALT_ROUNDS } from "./constant";
 const cors = require("cors");
+
 app.use(
   cors({
     origin: "*",
@@ -29,21 +30,25 @@ let refreshTokens: any = [];
 
 let hash: any;
 
+// -----------Users-----------------
+/**
+ * API create users account
+ */
 app.post("/api/sign-up", async (req: any, res: any) => {
-  const { username, password, fullName } = req.body;
+  const { username, password, fullName, isAdmin } = req.body;
   const id = uuidv4();
   hash = await bcrypt.hash(password.toString(), SALT_ROUNDS);
 
-  let sql = `INSERT INTO users VALUE ('${id}', '${username}', '${hash}', '${fullName}');`;
+  let sql = `INSERT INTO users VALUE ('${id}', '${username}', '${hash}', '${fullName}', '${isAdmin}');`;
 
   db.query(sql, (err, _) => {
     if (err) throw err;
-    res.json({ id, username, fullName });
+    res.json({ id, username, fullName, isAdmin });
   });
 });
 
 /**
- * API Login
+ * API Login user account
  */
 app.post("/api/login", async (req: any, response: any) => {
   const { username, password } = req.body;
@@ -52,7 +57,13 @@ app.post("/api/login", async (req: any, response: any) => {
 
   db.query(sql, (err, res) => {
     if (err) throw err;
-    const { password: passwordDB, username: usernameDB, id, fullName } = res[0];
+    const {
+      password: passwordDB,
+      username: usernameDB,
+      id,
+      fullName,
+      isAdmin,
+    } = res[0];
 
     bcrypt.compare(password.toString(), passwordDB, (err, result) => {
       if (result && username === usernameDB) {
@@ -72,6 +83,7 @@ app.post("/api/login", async (req: any, response: any) => {
           refreshToken,
           username: usernameDB,
           fullName,
+          isAdmin,
         });
       } else {
         response.status(400).json("Username or password incorrect!");
@@ -163,11 +175,11 @@ app.delete("/api/users/:userId", verify, (req: any, res: any) => {
 /**
  * API update
  */
-app.put("/api/users/:userId", verify, (req: any, res: any) => {
-  if (req.params.userId) {
+app.put("/api/users/:usersId", verify, (req: any, res: any) => {
+  if (req.params.usersId) {
     let sql = `UPDATE users
     SET fullName = "${req.body.fullName}"
-    WHERE id = "${req.params.userId}"`;
+    WHERE id = "${req.params.usersId}"`;
 
     db.query(sql, (err) => {
       if (err) throw err;
@@ -175,6 +187,96 @@ app.put("/api/users/:userId", verify, (req: any, res: any) => {
     });
   } else {
     res.status(403).json("You are not allowed to delete this user!");
+  }
+});
+
+//-----------ADMIN---------------
+/**
+ * API get list blogs
+ */
+app.get("/api/blogs", (req: any, response: any) => {
+  const { page = 1, pageSize = 10, sort = "id", filter = "" } = req.query;
+  let sql = `Select *  From blogs`;
+  let queryParamsArr: any = ["title", "content", "summary"];
+  let queryParams: any = [];
+  // Apply filter
+  if (filter) {
+    sql += ` WHERE ${queryParamsArr.join(` Like ${filter} Or `)}`;
+  }
+
+  // Apply sorting
+  sql += ` ORDER BY ${sort}`;
+
+  // Apply paging
+  const startIndex = (page - 1) * pageSize;
+  sql += ` LIMIT ?, ?`;
+  queryParams.push(startIndex, pageSize);
+
+  db.query(sql, queryParams, (err, res) => {
+    if (err) throw err;
+    response.status(200).json({ data: res, page, pageSize });
+  });
+});
+
+/**
+ * API add blogs to list
+ */
+app.post("/api/blogs", verify, (req: any, response: any) => {
+  const { title, thumbnail, content } = req.body;
+  const id = uuidv4();
+  const summary = title;
+  let sql = `INSERT INTO blogs VALUE ('${id}', '${title}', '${thumbnail}', '${content}', '${summary}');`;
+
+  db.query(sql, (err, _) => {
+    if (err) throw err;
+    response.json({ id, title, thumbnail, content, summary });
+  });
+});
+
+/**
+ * API update blogs to list
+ */
+app.put("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  const { title, thumbnail, content, summary } = req.body;
+  let sql = `UPDATE blogs
+    SET title = "${title}", thumbnail = "${thumbnail}", content = "${content}", summary = "${summary}"
+    WHERE id = "${req.params.blogId}"`;
+
+  db.query(sql, (err, _) => {
+    if (err) throw err;
+    response.json({ title, thumbnail, content, summary });
+  });
+});
+
+/**
+ * API delete blogs in list
+ */
+app.delete("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  if (req.params.blogId) {
+    let sql = `Delete From blogs Where id='${req.params.blogId}'`;
+
+    db.query(sql, (err) => {
+      if (err) throw err;
+      response.status(200).json("Blog has been deleted.");
+    });
+  } else {
+    response.status(403).json("You are not allowed to delete this user!");
+  }
+});
+
+/**
+ * API get detail blog
+ */
+app.get("/api/blogs/:blogId", verify, (req: any, response: any) => {
+  if (req.params.blogId) {
+    let sql = `Select * From blogs Where id='${req.params.blogId}'`;
+
+    db.query(sql, (err, res) => {
+      if (err) throw err;
+      response.status(200).json(res);
+    });
+  } else {
+    response.status(403).json("You are not allowed to delete this user!");
   }
 });
 
