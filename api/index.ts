@@ -207,8 +207,9 @@ app.get("/api/blogs", verify, (req: any, response: any) => {
  * API add blogs to list
  */
 app.post("/api/blogs", verify, (req: any, response: any) => {
-  const { title, thumbnail, content, summary } = req.body;
+  const { title, thumbnail, content } = req.body;
   const id = uuidv4();
+  const summary = title;
   let sql = `INSERT INTO blogs VALUE ('${id}', '${title}', '${thumbnail}', '${content}', '${summary}');`;
 
   db.query(sql, (err, _) => {
