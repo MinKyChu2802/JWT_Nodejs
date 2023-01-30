@@ -203,7 +203,7 @@ app.get("/api/blogs", verify, (req: any, response: any) => {
 
     // Apply filter
     if (filter) {
-      res = res.filter((item) =>
+      res = res.filter((item: any) =>
         Object.values(item).some(
           (value) =>
             typeof value === "string" && value.toLowerCase().includes(filter)
