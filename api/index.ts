@@ -195,10 +195,38 @@ app.put("/api/users/:usersId", verify, (req: any, res: any) => {
  * API get list blogs
  */
 app.get("/api/blogs", verify, (req: any, response: any) => {
+  const { page = 1, limit = 10, sort = "id", filter = "" } = req.query;
   let sql = `Select *  From blogs`;
 
   db.query(sql, (err, res) => {
     if (err) throw err;
+
+    // Apply filter
+    if (filter) {
+      res = res.filter((item) =>
+        Object.values(item).some(
+          (value) =>
+            typeof value === "string" && value.toLowerCase().includes(filter)
+        )
+      );
+    }
+
+    // Apply sorting
+    res.sort((a: any, b: any) => {
+      if (a[sort] < b[sort]) {
+        return -1;
+      }
+      if (a[sort] > b[sort]) {
+        return 1;
+      }
+      return 0;
+    });
+
+    // Apply paging
+    const startIndex = (page - 1) * limit;
+    const endIndex = startIndex + limit;
+    res = res.slice(startIndex, endIndex);
+
     response.status(200).json(res);
   });
 });
