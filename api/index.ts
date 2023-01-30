@@ -194,7 +194,7 @@ app.put("/api/users/:usersId", verify, (req: any, res: any) => {
 /**
  * API get list blogs
  */
-app.get("/api/blogs", verify, (req: any, response: any) => {
+app.get("/api/blogs", (req: any, response: any) => {
   const { page = 1, pageSize = 10, sort = "id", filter = "" } = req.query;
   let sql = `Select *  From blogs`;
   let queryParamsArr: any = ["title", "content", "summary"];
