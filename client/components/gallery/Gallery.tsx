@@ -11,6 +11,7 @@ import Button from '@mui/material/Button'
 import { get } from 'services/apiClient'
 import { defaultImage } from 'configs/constants'
 import { useRouter } from 'next/router'
+import { apiURL } from 'routes/apiURL'
 
 const grid = [
   { x: 2, y: 2 },
@@ -122,7 +123,7 @@ const Gallery: NextPage = () => {
 
   const loadMore = useCallback(() => {
     setGallery((prev) => ({ ...prev, loading: true }))
-    get('http://192.168.8.41:4000/api/blogs', {}, (res) => {
+    get(`${process.env.NEXT_PUBLIC_SITE_URL_BE}${apiURL.apiBlog('')}`, {}, (res) => {
       setGallery((prev) => ({ loading: false, images: [...prev.images, ...res.data] }))
     })
   }, [setGallery])
