@@ -70,9 +70,19 @@ const AddBlog: NextPage<Props> = (props: Props) => {
     setShow(false)
     const body = { content, title, thumbnail }
 
-    post(`${process.env.NEXT_PUBLIC_SITE_URL_BE}${apiURL.apiBlog('')}`, { ...body }, {}, (res) => {
-      handleGetBlogsOrDetailBlog()
-    })
+    post(
+      `${process.env.NEXT_PUBLIC_SITE_URL_BE}${apiURL.apiBlog('')}`,
+      { ...body },
+      {
+        headers: {
+          Authorization: localStorage.getItem('accessToken'),
+          'Content-Type: ': ' application/json       ',
+        },
+      },
+      (res) => {
+        handleGetBlogsOrDetailBlog()
+      }
+    )
   })
 
   return (

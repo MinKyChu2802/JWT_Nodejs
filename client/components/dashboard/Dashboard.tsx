@@ -61,7 +61,7 @@ const Dashboard: NextPage = () => {
 
       <div className="mt-2 mb-4 flex justify-end">
         <Button
-          variant="contained"
+          variant="outlined"
           onClick={() => {
             setShow(true)
             setType('create')

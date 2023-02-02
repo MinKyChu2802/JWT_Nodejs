@@ -3,6 +3,7 @@ import { toast } from 'react-toastify'
 import { isSsr } from 'utils/common'
 
 const getToken = () => (isSsr ? '' : localStorage.getItem('accessToken'))
+const getRefreshToken = () => (isSsr ? '' : localStorage.getItem('refreshToken'))
 
 const { NEXT_PUBLIC_SITE_URL_BE } = process.env
 
@@ -24,7 +25,9 @@ const refreshToken = async () => {
   refreshingToken = true
 
   try {
-    const response = await axios.post(`${NEXT_PUBLIC_SITE_URL_BE}/refresh-token`)
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL_BE}/refresh-token`, {
+      token: getRefreshToken(),
+    })
     const token = response.data.token
     localStorage.setItem('accessToken', token)
     api.defaults.headers['Authorization'] = `Bearer ${token}`

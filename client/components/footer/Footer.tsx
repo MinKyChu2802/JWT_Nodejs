@@ -6,7 +6,7 @@ import { Button } from 'primereact/button'
 
 const Footer: NextPage = () => {
   return (
-    <div className="mx-auto w-full  p-8 bg-neutral-500 mt-6 text-white">
+    <div className="mx-auto w-full p-8 bg-neutral-500 mt-6 text-white ">
       <Wrapper title="Contact me">
         <div className="w-ful flex justify-around text-center">
           <Wrapper

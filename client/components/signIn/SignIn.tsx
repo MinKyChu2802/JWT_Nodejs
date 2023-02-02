@@ -82,6 +82,7 @@ const SignIn: FC = (riveProps: UseRiveParameters = {}) => {
       )
       .then((response: any) => {
         localStorage.setItem('accessToken', response.data.accessToken)
+        localStorage.setItem('refreshToken', response.data.refreshToken)
         setLoginButtonText('Done')
         trigSuccessInput!.fire()
         update(response.data)

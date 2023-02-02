@@ -43,7 +43,7 @@ app.post("/api/sign-up", async (req: any, res: any) => {
 
   db.query(sql, (err, _) => {
     if (err) throw err;
-    res.json({ id, username, fullName, isAdmin });
+    res.status(200).json({ id, username, fullName, isAdmin });
   });
 });
 
@@ -105,10 +105,9 @@ app.post("/api/refresh-token", (req: any, res: any) => {
     return res.status(403).json("Refresh token is not valid!");
   }
   jwt.verify(refreshToken, MY_SECRET_KEY, (err: any, user: any) => {
-    err && console.log(err);
-    refreshTokens = refreshTokens.filter(
-      (token: any) => token !== refreshToken
-    );
+    // refreshTokens = refreshTokens.filter(
+    //   (token: any) => token !== refreshToken
+    // );
 
     const newAccessToken = generateAccessToken(user);
     const newRefreshToken = generateRefreshToken(user);
@@ -132,8 +131,8 @@ app.post("/api/refresh-token", (req: any, res: any) => {
 const verify = (req: any, res: any, next: any) => {
   const authHeader = req.headers.authorization;
   if (authHeader) {
-    const token = authHeader.split(" ")[1];
 
+    const token = authHeader.split(" ")[1];
     jwt.verify(token, MY_SECRET_KEY, (err: any, user: any) => {
       if (err) {
         return res.status(403).json("Token is not valid!");
