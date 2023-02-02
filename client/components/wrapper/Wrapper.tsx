@@ -3,15 +3,22 @@ import React from 'react'
 
 interface Props {
   title: string
-  children: React.ReactNode
+  children?: React.ReactNode
+  isSmall?: boolean
 }
 
 const Wrapper: NextPage<Props> = (props: Props) => {
-  const { title, children } = props
+  const { title, children, isSmall } = props
 
   return (
     <div>
-      <div className="text-[36px] font-bold mb-10 w-full text-center underline underline-offset-4">{title}</div>
+      <div
+        className={`${isSmall ? 'text-base' : 'text-[36px]'} uppercase font-bold ${
+          isSmall ? 'mb-2' : 'mb-10'
+        } w-full text-center ${isSmall ? '' : 'underline underline-offset-8'}  `}
+      >
+        {title}
+      </div>
       {children}
     </div>
   )

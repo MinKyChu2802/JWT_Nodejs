@@ -10,8 +10,8 @@ const Header: NextPage = () => {
         <Image
           src={logo}
           alt=""
-          width={160}
-          height={160}
+          width={80}
+          height={80}
         />
       </div>
 
